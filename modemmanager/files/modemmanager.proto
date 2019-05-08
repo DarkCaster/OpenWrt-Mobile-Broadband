@@ -285,6 +285,22 @@ proto_modemmanager_init_config() {
 	proto_config_add_boolean lowpower
 }
 
+wait_for_reg() {
+  local modem="$1"
+  local waittime="10"
+  local modemstatus="none"
+  local status="none"
+  while [ $waittime != 0 ]
+  do
+    modemstatus=$(/usr/bin/mmcli --modem="${modem}" --simple-status)
+  	status=$(modemmanager_get_field "${modemstatus}" "Status" "state")
+    [ "$status" = "registered" ] && echo "mobile network registration confirmed" && return 0
+    waittime=`expr $waittime - 2`
+    sleep 2
+  done
+  return 1
+}
+
 proto_modemmanager_setup() {
 	local interface="$1"
 
@@ -323,9 +339,14 @@ proto_modemmanager_setup() {
 	# Remove all previous bearers, we always create a new one
 	modemmanager_remove_bearers "${device}"
 
+	#enable modem
+	echo "enabling modem"
+	/usr/bin/mmcli --modem="${device}" --enable
+	wait_for_reg "${device}"
+
 	# Setup connect args; APN mandatory (even if it may be empty)
 	echo "starting connection with apn '${apn}'..."
-	connectargs="apn=${apn}${username:+,user=${username}}${password:+,password=${password}}${pincode:+,pin=${pincode}}${iptype:+,ip-type=${iptype}},allow-roaming=yes"
+	connectargs="allow-roaming=true,apn=${apn}${username:+,user=${username}}${password:+,password=${password}}${pincode:+,pin=${pincode}}${iptype:+,ip-type=${iptype}}"
 	/usr/bin/mmcli --modem="${device}" --timeout 120 --simple-connect="${connectargs}" || {
 		proto_notify_error "${interface}" CONNECT_FAILED
 		proto_block_restart "${interface}"
