@@ -1,0 +1,8 @@
+#!/bin/sh
+
+/etc/init.d/modemmanager stop
+/etc/init.d/modemmanager disable
+
+rm -f /tmp/luci-indexcache
+
+exit 0

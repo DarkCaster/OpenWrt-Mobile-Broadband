@@ -128,6 +128,9 @@ define Package/modemmanager/install
 
 	$(INSTALL_DIR) $(1)/lib/netifd/proto
 	$(INSTALL_BIN) ./files/modemmanager.proto $(1)/lib/netifd/proto/modemmanager.sh
+
+	$(INSTALL_DIR) $(1)/etc/uci-defaults
+	$(INSTALL_BIN) ./files/uci.defaults $(1)/etc/uci-defaults/99-modemmanager
 endef
 
 $(eval $(call RequireCommand,xsltproc, \
