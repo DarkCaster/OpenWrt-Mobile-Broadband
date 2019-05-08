@@ -116,6 +116,7 @@ define Package/modemmanager/install
 
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_BIN) ./files/modemmanager.init $(1)/etc/init.d/modemmanager
+	$(INSTALL_BIN) ./files/modemmanager.init.delay $(1)/etc/init.d/modemmanager-delay
 
 	$(INSTALL_DIR) $(1)/etc/hotplug.d/net
 	$(INSTALL_DATA) ./files/25-modemmanager-net $(1)/etc/hotplug.d/net
