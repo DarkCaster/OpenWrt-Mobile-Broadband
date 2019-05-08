@@ -11,6 +11,21 @@
 # We require a interface name
 [ -n "${INTERFACE}" ] || return
 
+skip="false"
+
+case "${INTERFACE}" in
+  "br"*) skip="true" ;;
+  "eth"*) skip="true" ;;
+  "tun"*) skip="true" ;;
+  "tap"*) skip="true" ;;
+  "vpn"*) skip="true" ;;
+  "teredo"*) skip="true" ;;
+  "veth"*) skip="true" ;;
+  "wlan"*) skip="true" ;;
+esac
+
+[ "$skip" = "true" ] && mm_log "skipping event for incorrect network interface ${INTERFACE}" && exit 0
+
 # Report network interface
 mm_log "${ACTION} network interface ${INTERFACE}: event processed"
 mm_report_event "${ACTION}" "${INTERFACE}" "net" "/sys${DEVPATH}"

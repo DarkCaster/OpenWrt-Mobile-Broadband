@@ -11,6 +11,17 @@
 # We require a device name
 [ -n "$DEVNAME" ] || return
 
+case "${DEVNAME}" in
+  "ttyS"*)
+    mm_log "skipping event for incorrect tty device ${DEVNAME}"
+    exit 0
+    ;;
+  "console")
+    mm_log "skipping event for console device"
+    exit 0
+    ;;
+esac
+
 # Report TTY
 mm_log "${ACTION} serial interface ${DEVNAME}: event processed"
 mm_report_event "${ACTION}" "${DEVNAME}" "tty" "/sys${DEVPATH}"
