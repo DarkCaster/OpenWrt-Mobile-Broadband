@@ -325,7 +325,7 @@ proto_modemmanager_setup() {
 
 	# Setup connect args; APN mandatory (even if it may be empty)
 	echo "starting connection with apn '${apn}'..."
-	connectargs="apn=${apn}${username:+,user=${username}}${password:+,password=${password}}${pincode:+,pin=${pincode}}${iptype:+,ip-type=${iptype}}"
+	connectargs="apn=${apn}${username:+,user=${username}}${password:+,password=${password}}${pincode:+,pin=${pincode}}${iptype:+,ip-type=${iptype}},allow-roaming=yes"
 	/usr/bin/mmcli --modem="${device}" --timeout 120 --simple-connect="${connectargs}" || {
 		proto_notify_error "${interface}" CONNECT_FAILED
 		proto_block_restart "${interface}"
